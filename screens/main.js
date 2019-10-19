@@ -31,20 +31,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width,
-        backgroundColor: "#1f1f1f"
+        backgroundColor: "#444f5a"
     },
     control: {
         width,
         alignItems: 'center',
         flexDirection: "row",
         justifyContent: 'space-evenly',
-        marginBottom: 15
+    },
+    logo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 5
+    },
+    logoImage: {
+        width: 40,
+        height: 40,
+        resizeMode: 'contain'
     },
     title: {
         color: '#ffffff',
         fontSize: 24,
-        fontWeight: 'bold',
-        marginTop: 15
+        marginLeft: 10,
+        marginTop: 3
     }
 })
 
@@ -53,10 +63,13 @@ const Main = (props) => {
     const { loading, data, error, refetch, fetchMore } = useQuery(getNews, {
         notifyOnNetworkStatusChange: true,
         fetchPolicy: 'network-only',
+        onCompleted: () => setPageReady(true),
+        onError: () => setPageReady(true)
     })
 
     const [selectedIndex, setIndex] = useState(0)
     const [play, setPlay] = useState(false)
+    const [pageReady, setPageReady] = useState(false)
 
     useEffect(() => {
         setAudio()
@@ -93,7 +106,9 @@ const Main = (props) => {
             data.news.map((item, index) => {
                 TrackPlayer.add({
                     id: item._id,
-                    url: audioUrl + item.audio
+                    url: audioUrl + item.audio,
+                    title: item.title,
+                    artist: item.source
                 });
             })
 
@@ -158,48 +173,55 @@ const Main = (props) => {
         }
     }
 
+    if (!pageReady) {
+        return (
+            <View style={[styles.container, {justifyContent: 'center', alignItems: 'center' }]}>
+                <ActivityIndicator color="white" />
+            </View>
+        )
+    }
+
     return (
         <ScrollView
             style={styles.container}
             contentContainerStyle={{
                 flex: 1,
                 alignItems: "center",
-                justifyContent: 'space-evenly'
+                justifyContent: 'center'
             }}
             refreshControl={
                 <RefreshControl
+                    tintColor="#fff"
+                    titleColor="#fff"
                     refreshing={loading}
                     onRefresh={refetch}
                 />
             }
         >
-            <Text style={styles.title}>TapNews</Text>
-            {
-                loading ? (
-                    <View style={{ flex: 1 }} />
-                ) : (
-                        <>
-                            <Carousel
-                                currentIndex={0}
-                                currentScrollPosition={0}
-                                loop={true}
-                                ref={r => { carousel = r }}
-                                layout={'stack'}
-                                layoutCardOffset={9}
-                                data={data && data.news ? data.news : []}
-                                renderItem={renderItem}
-                                sliderWidth={width}
-                                itemWidth={width * 0.91}
-                                contentContainerCustomStyle={{
-                                    alignItems: "center",
-                                    backgroundColor: "transparent"
-                                }}
-                                swipeThreshold={width / 2}
-                                onBeforeSnapToItem={(index) => { setIndex(index) }}
-                            />
-                        </>
-                    )
-            }
+            <View style={styles.logo}>
+                <Image style={styles.logoImage} source={require('../logo.png')} />
+                <Text style={styles.title}>Tap News</Text>
+            </View>
+            <View style={{ paddingBottom: 20, paddingTop: 25, width }}>
+                <Carousel
+                    currentIndex={0}
+                    currentScrollPosition={0}
+                    loop={true}
+                    ref={r => { carousel = r }}
+                    layout={'stack'}
+                    layoutCardOffset={9}
+                    data={data && data.news ? data.news : []}
+                    renderItem={renderItem}
+                    sliderWidth={width}
+                    itemWidth={width * 0.91}
+                    contentContainerCustomStyle={{
+                        alignItems: "center",
+                        backgroundColor: "transparent"
+                    }}
+                    swipeThreshold={20}
+                    onBeforeSnapToItem={(index) => { setIndex(index) }}
+                />
+            </View>
             <View
                 style={styles.control}
             >

@@ -13,6 +13,7 @@ import {
     ScrollView,
     View,
     Text,
+    Platform,
     StatusBar,
     Dimensions
 } from 'react-native';
@@ -22,11 +23,21 @@ import Main from './router'
 const { width, height } = Dimensions.get("window")
 
 export default App = () => {
-    return (
-        <ApolloProvider>
-            <Main />
-        </ApolloProvider>
-    );
+    if (Platform.OS === 'ios') {
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <ApolloProvider>
+                    <Main />
+                </ApolloProvider>
+            </SafeAreaView>
+        )
+    } else {
+        return (
+            <ApolloProvider>
+                <Main />
+            </ApolloProvider>
+        );
+    }
 };
 
 const styles = StyleSheet.create({

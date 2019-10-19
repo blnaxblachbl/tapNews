@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     noImageAddContainer: {
         width: width * 0.91,
-        height: 260,
+        height: height * 0.27,
         backgroundColor: "#ffffff",
         alignItems: 'center',
         justifyContent: "center",
@@ -78,7 +78,7 @@ const NewsItem = ({ item, navigation }) => {
                         source={{ uri: item.image }}
                         style={{
                             width: width * 0.91,
-                            height: 260,
+                            height: height * 0.27,
                         }}
                         resizeMode="cover"
                     />
