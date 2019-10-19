@@ -17,9 +17,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // import Voice from 'react-native-voice'
-import TrackPlayer from 'react-native-track-player'
 import { getNews } from '../gqls/queries'
 import { useQuery } from '@apollo/react-hooks'
+import SoundPlayer from 'react-native-sound-player'
 
 import {
     audioUrl
@@ -58,46 +58,44 @@ const Main = (props) => {
     const [selectedIndex, setIndex] = useState(0)
     const [play, setPlay] = useState(false)
 
+    let timer = null
+
     useEffect(() => {
         setAudio()
     }, [data])
 
     useEffect(() => {
-        console.log(play)
         if (play) {
-            TrackPlayer.play()
+            SoundPlayer.play()
         } else {
-            TrackPlayer.pause()
+            SoundPlayer.pause()
         }
     }, [play])
 
     useEffect(() => {
-        if (data && data.news) {
-            console.log("8==>", data.news[selectedIndex]._id)
-            TrackPlayer.skip(data.news[selectedIndex]._id)
-            // setPlay(true)
-            // TrackPlayer.play()
-        }
-        console.log(selectedIndex)
+        onIndexChange()
     }, [selectedIndex])
 
-    TrackPlayer.addEventListener('remote-jump-forward', () => {
+    const onIndexChange = async () => {
+        if (data && data.news) {
+            SoundPlayer.playUrl(audioUrl + data.news[selectedIndex].audio)
+            if (!play){
+                SoundPlayer.pause()
+            }
+        }
+        console.log(selectedIndex)
+    }
+
+    SoundPlayer.onFinishedPlaying(()=>{
         carousel.snapToNext(true)
-        console.log('remote-jump-forward')
     })
 
     carousel = useRef(null)
 
     const setAudio = () => {
         if (data && data.news) {
-            data.news.map((item, index) => {
-                TrackPlayer.add({
-                    id: item._id,
-                    url: audioUrl + item.audio
-                });
-            })
-
-            console.log(selectedIndex)
+            SoundPlayer.playUrl(audioUrl + data.news[selectedIndex].audio)
+            SoundPlayer.pause()
         }
     }
 
@@ -130,7 +128,7 @@ const Main = (props) => {
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => {
-                        setPlay(false)
+                        setTimeout(() => { setPlay(false) }, 0)
                     }}
                     style={{ alignItems: "center", justifyContent: "center" }}
                 >
@@ -145,7 +143,7 @@ const Main = (props) => {
             return (
                 <TouchableOpacity
                     activeOpacity={0.5}
-                    onPress={() => { setPlay(true) }}
+                    onPress={() => { setTimeout(() => { setPlay(true) }, 0) }}
                     style={{ alignItems: "center", justifyContent: "center" }}
                 >
                     <Ionicons
@@ -180,10 +178,10 @@ const Main = (props) => {
                 ) : (
                         <>
                             <Carousel
+                                ref={r => { carousel = r }}
                                 currentIndex={0}
                                 currentScrollPosition={0}
                                 loop={true}
-                                ref={r => { carousel = r }}
                                 layout={'stack'}
                                 layoutCardOffset={9}
                                 data={data && data.news ? data.news : []}
@@ -194,7 +192,7 @@ const Main = (props) => {
                                     alignItems: "center",
                                     backgroundColor: "transparent"
                                 }}
-                                swipeThreshold={width / 2}
+                                swipeThreshold={width / 3}
                                 onBeforeSnapToItem={(index) => { setIndex(index) }}
                             />
                         </>
@@ -207,7 +205,7 @@ const Main = (props) => {
                     activeOpacity={0.5}
                     onPress={() => {
                         if (data.news.length > 0) {
-                            carousel.snapToPrev(true)
+                            setTimeout(() => { carousel.snapToPrev(true) }, 0)
                         }
                     }}
                     style={{ alignItems: "center", justifyContent: "center" }}
@@ -223,7 +221,7 @@ const Main = (props) => {
                     activeOpacity={0.5}
                     onPress={() => {
                         if (data.news.length > 0) {
-                            carousel.snapToNext(true)
+                            setTimeout(() => { carousel.snapToNext(true) }, 0)
                         }
                     }}
                     style={{ alignItems: "center", justifyContent: "center" }}

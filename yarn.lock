@@ -5510,6 +5510,11 @@ react-native-snap-carousel@^3.8.2:
     prop-types "^15.6.1"
     react-addons-shallow-compare "15.6.2"
 
+react-native-sound-player@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/react-native-sound-player/-/react-native-sound-player-0.10.1.tgz#7dc170732b7c85c982d099db69b3d5c83f36a2b7"
+  integrity sha512-bHVS3JqUVA64pRzeQl/qjSyChQK/EShlQTqGl6SQ3FxUIaJukzMOGU4DTsvTJSUngecp7L8gT7JEDYn0gqhAkA==
+
 react-native-track-player@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-1.1.8.tgz#4827d46a14320c405d19f34593c3f999c2424b0f"
