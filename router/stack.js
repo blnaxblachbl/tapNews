@@ -16,7 +16,7 @@ export default createStackNavigator(
             screen: ModalScreen,
             navigationOptions: ({ navigation }) => ({
                 headerStyle: {
-                    backgroundColor: "#1f1f1f",
+                    backgroundColor: "#444f5a",
                 },
                 headerTitle: navigation.state.params.item.title,
                 headerTitleStyle: { color: 'white' },
