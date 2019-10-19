@@ -1,0 +1,5 @@
+{
+    "url": "http://192.168.0.113:3000/graphql",
+    "audioUrl": "http://192.168.0.113:3000/uploads/",
+    "imageUrl": "http://192.168.31.184:1337"
+}
