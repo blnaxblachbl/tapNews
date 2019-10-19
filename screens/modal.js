@@ -21,7 +21,7 @@ const { width, height } = Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#1f1f1f",
+        backgroundColor: "#444f5a",
     },
     title: {
         fontSize: 17,
