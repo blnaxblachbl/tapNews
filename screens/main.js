@@ -20,6 +20,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { getNews } from '../gqls/queries'
 import { useQuery } from '@apollo/react-hooks'
 import SoundPlayer from 'react-native-sound-player'
+import SplashScreen from 'react-native-splash-screen'
 
 import {
     audioUrl
@@ -63,8 +64,14 @@ const Main = (props) => {
     const { loading, data, error, refetch, fetchMore } = useQuery(getNews, {
         notifyOnNetworkStatusChange: true,
         fetchPolicy: 'network-only',
-        onCompleted: () => setPageReady(true),
-        onError: () => setPageReady(true)
+        onCompleted: () => {
+            setPageReady(true)
+            SplashScreen.hide()
+        },
+        onError: () => {
+            setPageReady(true)
+            SplashScreen.hide()
+        }
     })
 
     const [selectedIndex, setIndex] = useState(0)
