@@ -20,6 +20,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { getNews } from '../gqls/queries'
 import { useQuery } from '@apollo/react-hooks'
 import SoundPlayer from 'react-native-sound-player'
+import SourcePicker from './sourcePicker'
 
 import {
     audioUrl
@@ -70,6 +71,8 @@ const Main = (props) => {
     const [selectedIndex, setIndex] = useState(0)
     const [play, setPlay] = useState(false)
     const [pageReady, setPageReady] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
+    const [filter, setFilter] = useState("all")
 
     let timer = null
 
@@ -91,15 +94,15 @@ const Main = (props) => {
 
     const onIndexChange = async () => {
         if (data && data.news) {
-            SoundPlayer.playUrl(audioUrl + data.news[selectedIndex].audio)
-            if (!play){
+            SoundPlayer.playUrl(audioUrl + filterFunc()[selectedIndex].audio)
+            if (!play) {
                 SoundPlayer.pause()
             }
         }
         console.log(selectedIndex)
     }
 
-    SoundPlayer.onFinishedPlaying(()=>{
+    SoundPlayer.onFinishedPlaying(() => {
         carousel.snapToNext(true)
     })
 
@@ -107,7 +110,7 @@ const Main = (props) => {
 
     const setAudio = () => {
         if (data && data.news) {
-            SoundPlayer.playUrl(audioUrl + data.news[selectedIndex].audio)
+            SoundPlayer.playUrl(audioUrl + filterFunc()[selectedIndex].audio)
             SoundPlayer.pause()
         }
     }
@@ -169,9 +172,24 @@ const Main = (props) => {
         }
     }
 
+    const filterFunc = () => {
+        return data.news.filter((data) => {
+            if (filter == "all") {
+                return data
+            } else {
+                return data.source == filter
+            }
+        })
+    }
+
+    const setFilterFunc = (filter) => {
+        setFilter(filter)
+        setTimeout(() => { carousel.snapToNext(true) }, 300)
+    }
+
     if (!pageReady) {
         return (
-            <View style={[styles.container, {justifyContent: 'center', alignItems: 'center' }]}>
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
                 <ActivityIndicator color="white" />
             </View>
         )
@@ -197,6 +215,19 @@ const Main = (props) => {
             <View style={styles.logo}>
                 <Image style={styles.logoImage} source={require('../logo.png')} />
                 <Text style={styles.title}>Tap News</Text>
+                <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => { setModalVisible(true) }}
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                >
+                    <Ionicons
+                        name="md-settings"
+                        size={30}
+                        color={filter == "all" ? "white" : "#ff9999"}
+                        style={{ marginLeft: 10, marginTop: 6 }}
+                    />
+                </TouchableOpacity>
+
             </View>
             <View style={{ paddingBottom: 20, paddingTop: 25, width }}>
                 <Carousel
@@ -206,7 +237,7 @@ const Main = (props) => {
                     ref={r => { carousel = r }}
                     layout={'stack'}
                     layoutCardOffset={9}
-                    data={data && data.news ? data.news : []}
+                    data={data && data.news ? filterFunc() : []}
                     renderItem={renderItem}
                     sliderWidth={width}
                     itemWidth={width * 0.91}
@@ -224,7 +255,7 @@ const Main = (props) => {
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => {
-                        if (data.news.length > 0) {
+                        if (filterFunc().length > 0) {
                             setTimeout(() => { carousel.snapToPrev(true) }, 0)
                         }
                     }}
@@ -240,7 +271,7 @@ const Main = (props) => {
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => {
-                        if (data.news.length > 0) {
+                        if (filterFunc().length > 0) {
                             setTimeout(() => { carousel.snapToNext(true) }, 0)
                         }
                     }}
@@ -252,9 +283,8 @@ const Main = (props) => {
                         size={35}
                     />
                 </TouchableOpacity>
-
             </View>
-
+            <SourcePicker visible={modalVisible} setModalVisible={setModalVisible} filter={filter} setFilter={setFilterFunc} />
         </ScrollView>
     )
 }
