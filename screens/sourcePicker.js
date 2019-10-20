@@ -5,7 +5,8 @@ import {
     Dimensions,
     Text,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    Image
 } from 'react-native'
 
 const { width, height } = Dimensions.get('window')
@@ -101,47 +102,58 @@ const SourcePicker = props => {
     const feeds = [
         {
             label: 'YSIA Актуальное',
-            value: 'ysia-actual'
+            value: 'ysia-actual',
+            icon: require('../ysia.jpg')
         },
         {
             label: 'YSIA Экономика',
-            value: 'ysia-economika'
+            value: 'ysia-economika',
+            icon: require('../ysia.jpg')
         },
         {
             label: 'YSIA Спорт',
-            value: 'ysia-sport'
+            value: 'ysia-sport',
+            icon: require('../ysia.jpg')
         },
         {
             label: 'YSIA Политика',
-            value: 'ysia-politika'
+            value: 'ysia-politika',
+            icon: require('../ysia.jpg')
         },
         {
             label: 'VCRU Актуальное',
-            value: 'vcru-actual'
+            value: 'vcru-actual',
+            icon: require('../vc.jpg')
         },
         {
             label: 'VCRU Финансы',
-            value: 'vcru-finance'
+            value: 'vcru-finance',
+            icon: require('../vc.jpg')
         },
         {
             label: 'VCRU Техника',
-            value: 'vcru-tech'
+            value: 'vcru-tech',
+            icon: require('../vc.jpg')
         },
         {
             label: 'VCRU Личный опыт',
-            value: 'vcru-life'
+            value: 'vcru-life',
+            icon: require('../vc.jpg')
         },
         {
             label: 'Лента.РУ Актуальное',
-            value: 'lenta-actual'
+            value: 'lenta-actual',
+            icon: require('../lenta.jpg')
         },
         {
             label: 'Лента.РУ Россия',
-            value: 'lenta-russia'
+            value: 'lenta-russia',
+            icon: require('../lenta.jpg')
         },
         {
             label: 'Лента.РУ Путешествие',
-            value: 'lenta-travel'
+            value: 'lenta-travel',
+            icon: require('../lenta.jpg')
         }
     ]
 
@@ -183,7 +195,14 @@ const SourcePicker = props => {
                                 }}
                                 style={styles.itemContainer}
                             >
-                                <Text style={styles.itemTitle}>{item.label}</Text>
+                                <View style={{ alignItems: 'center', flexDirection: "row" }}>
+                                    <Image
+                                        source={item.icon}
+                                        resizeMode="contain"
+                                        style={{ height: 25, maxWidth: 50, marginRight: 10 }}
+                                    />
+                                    <Text style={styles.itemTitle}>{item.label}</Text>
+                                </View>
                                 <View style={styles.circleOut}>
                                     {state.indexOf(item.value) != -1 ? (<View style={styles.circleIn} />) : null}
                                 </View>
