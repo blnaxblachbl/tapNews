@@ -166,10 +166,20 @@ const SourcePicker = props => {
                                 key={index}
                                 activeOpacity={0.6}
                                 onPress={() => {
-                                    setState(prev => ([
-                                        ...prev,
-                                        item.value
-                                    ]))
+                                    if (state.includes(item.value)) {
+                                        let newState = state.map((l, i) => {
+                                            if (l != item.value) {
+                                                return l
+                                            }
+                                        })
+                                        setState(newState)
+                                    } else {
+                                        setState(prev => ([
+                                            ...prev,
+                                            item.value
+                                        ]))
+                                    }
+
                                 }}
                                 style={styles.itemContainer}
                             >
