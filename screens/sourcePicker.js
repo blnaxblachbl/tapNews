@@ -83,6 +83,64 @@ const styles = StyleSheet.create({
     }
 })
 
+const feeds = [
+    {
+        label: 'YSIA Актуальное',
+        value: 'ysia-actual',
+        icon: require('../ysia.jpg')
+    },
+    {
+        label: 'YSIA Экономика',
+        value: 'ysia-economika',
+        icon: require('../ysia.jpg')
+    },
+    {
+        label: 'YSIA Спорт',
+        value: 'ysia-sport',
+        icon: require('../ysia.jpg')
+    },
+    {
+        label: 'YSIA Политика',
+        value: 'ysia-politika',
+        icon: require('../ysia.jpg')
+    },
+    {
+        label: 'VCRU Актуальное',
+        value: 'vcru-actual',
+        icon: require('../vc.jpg')
+    },
+    {
+        label: 'VCRU Финансы',
+        value: 'vcru-finance',
+        icon: require('../vc.jpg')
+    },
+    {
+        label: 'VCRU Техника',
+        value: 'vcru-tech',
+        icon: require('../vc.jpg')
+    },
+    {
+        label: 'VCRU Личный опыт',
+        value: 'vcru-life',
+        icon: require('../vc.jpg')
+    },
+    {
+        label: 'Лента.РУ Актуальное',
+        value: 'lenta-actual',
+        icon: require('../lenta.jpg')
+    },
+    {
+        label: 'Лента.РУ Россия',
+        value: 'lenta-russia',
+        icon: require('../lenta.jpg')
+    },
+    {
+        label: 'Лента.РУ Путешествие',
+        value: 'lenta-travel',
+        icon: require('../lenta.jpg')
+    }
+]
+
 const SourcePicker = props => {
 
     // if (!props.visible) return null
@@ -95,67 +153,9 @@ const SourcePicker = props => {
     const [state, setState] = useState(filter)
 
     const setData = () => {
-        setTimeout(() => { setFilter(state) }, 0)
+        setFilter(state)
         props.navigation.goBack()
     }
-
-    const feeds = [
-        {
-            label: 'YSIA Актуальное',
-            value: 'ysia-actual',
-            icon: require('../ysia.jpg')
-        },
-        {
-            label: 'YSIA Экономика',
-            value: 'ysia-economika',
-            icon: require('../ysia.jpg')
-        },
-        {
-            label: 'YSIA Спорт',
-            value: 'ysia-sport',
-            icon: require('../ysia.jpg')
-        },
-        {
-            label: 'YSIA Политика',
-            value: 'ysia-politika',
-            icon: require('../ysia.jpg')
-        },
-        {
-            label: 'VCRU Актуальное',
-            value: 'vcru-actual',
-            icon: require('../vc.jpg')
-        },
-        {
-            label: 'VCRU Финансы',
-            value: 'vcru-finance',
-            icon: require('../vc.jpg')
-        },
-        {
-            label: 'VCRU Техника',
-            value: 'vcru-tech',
-            icon: require('../vc.jpg')
-        },
-        {
-            label: 'VCRU Личный опыт',
-            value: 'vcru-life',
-            icon: require('../vc.jpg')
-        },
-        {
-            label: 'Лента.РУ Актуальное',
-            value: 'lenta-actual',
-            icon: require('../lenta.jpg')
-        },
-        {
-            label: 'Лента.РУ Россия',
-            value: 'lenta-russia',
-            icon: require('../lenta.jpg')
-        },
-        {
-            label: 'Лента.РУ Путешествие',
-            value: 'lenta-travel',
-            icon: require('../lenta.jpg')
-        }
-    ]
 
     return (
         <>
@@ -179,7 +179,7 @@ const SourcePicker = props => {
                                 activeOpacity={0.6}
                                 onPress={() => {
                                     if (state.includes(item.value)) {
-                                        let newState = state.map((l, i) => {
+                                        let newState = state.filter((l) => {
                                             if (l != item.value) {
                                                 return l
                                             }
