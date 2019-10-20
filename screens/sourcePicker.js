@@ -4,18 +4,17 @@ import {
     StyleSheet,
     Dimensions,
     Text,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from 'react-native'
 
 const { width, height } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
     container: {
-        ...StyleSheet.absoluteFillObject,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "rgba(0,0,0,0.4)",
-        zIndex: 999
+        flex: 1,
+        width,
+        backgroundColor: "#444f5a",
     },
     whiteContainer: {
         width: '80%',
@@ -27,8 +26,9 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 21,
         fontWeight: "bold",
-        color: "black",
+        color: "white",
         marginVertical: 10,
+        marginTop: 15,
         width: "90%",
         letterSpacing: 1.5,
     },
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: "space-between",
-        marginTop: 10
+        marginTop: 15
     },
     circleOut: {
         width: 18,
@@ -56,65 +56,142 @@ const styles = StyleSheet.create({
     },
     itemTitle: {
         fontSize: 17,
-        color: "black"
+        color: "white"
+    },
+    buttonContainer: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: "center",
+        width,
+        backgroundColor: "#444f5a",
+        bottom: 0
+    },
+    button: {
+        borderWidth: 1,
+        borderColor: "white",
+        borderRadius: 5,
+        padding: 10,
+        width: "90%",
+        alignItems: "center",
+        marginBottom: 15
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 14,
+        fontWeight: "bold",
     }
 })
 
 const SourcePicker = props => {
 
-    if (!props.visible) return null
+    // if (!props.visible) return null
 
-    const setData = (data) => {
-        setTimeout(() => { props.setFilter(data) }, 0)
-        props.setModalVisible(false)
+    const {
+        setFilter,
+        filter
+    } = props.navigation.state.params
+
+    const [state, setState] = useState(filter)
+
+    const setData = () => {
+        setTimeout(() => { setFilter(state) }, 0)
+        props.navigation.goBack()
     }
 
+    const feeds = [
+        {
+            label: 'YSIA Актуальное',
+            value: 'ysia-actual'
+        },
+        {
+            label: 'YSIA Экономика',
+            value: 'ysia-economika'
+        },
+        {
+            label: 'YSIA Спорт',
+            value: 'ysia-sport'
+        },
+        {
+            label: 'YSIA Политика',
+            value: 'ysia-politika'
+        },
+        {
+            label: 'VCRU Актуальное',
+            value: 'vcru-actual'
+        },
+        {
+            label: 'VCRU Финансы',
+            value: 'vcru-finance'
+        },
+        {
+            label: 'VCRU Техника',
+            value: 'vcru-tech'
+        },
+        {
+            label: 'VCRU Личный опыт',
+            value: 'vcru-life'
+        },
+        {
+            label: 'Лента.РУ Актуальное',
+            value: 'lenta-actual'
+        },
+        {
+            label: 'Лента.РУ Россия',
+            value: 'lenta-russia'
+        },
+        {
+            label: 'Лента.РУ Путешествие',
+            value: 'lenta-travel'
+        }
+    ]
+
     return (
-        <View style={styles.container}>
-            <View style={styles.whiteContainer}>
+        <>
+            <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center", paddingBottom: 90 }}>
                 <Text style={styles.title}>Выберите источник</Text>
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={() => { setData("all") }}
+                    onPress={() => { setState([]) }}
                     style={styles.itemContainer}
                 >
                     <Text style={styles.itemTitle}>Все</Text>
                     <View style={styles.circleOut}>
-                        {props.filter == "all" ? (<View style={styles.circleIn} />) : null}
+                        {state.length == 0 ? (<View style={styles.circleIn} />) : null}
                     </View>
                 </TouchableOpacity>
+                {
+                    feeds.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                key={index}
+                                activeOpacity={0.6}
+                                onPress={() => {
+                                    setState(prev => ([
+                                        ...prev,
+                                        item.value
+                                    ]))
+                                }}
+                                style={styles.itemContainer}
+                            >
+                                <Text style={styles.itemTitle}>{item.label}</Text>
+                                <View style={styles.circleOut}>
+                                    {state.indexOf(item.value) != -1 ? (<View style={styles.circleIn} />) : null}
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
+            </ScrollView>
+            <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={() => { setData("ysia.ru") }}
-                    style={styles.itemContainer}
+                    onPress={setData}
+                    style={styles.button}
                 >
-                    <Text style={styles.itemTitle}>ysia.ru</Text>
-                    <View style={styles.circleOut}>
-                        {props.filter == "ysia.ru" ? (<View style={styles.circleIn} />) : null}
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => { setData("vc.ru") }}
-                    style={styles.itemContainer}
-                >
-                    <Text style={styles.itemTitle}>vc.ru</Text>
-                    <View style={styles.circleOut}>
-                        {props.filter == "vc.ru" ? (<View style={styles.circleIn} />) : null}
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => { setData("lenta.ru") }}
-                    style={styles.itemContainer}
-                >
-                    <Text style={styles.itemTitle}>lenta.ru</Text>
-                    <View style={styles.circleOut}>
-                        {props.filter == "lenta.ru" ? (<View style={styles.circleIn} />) : null}
-                    </View>
+                    <Text style={styles.buttonText}>Применить</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </>
     )
 }
 

@@ -22,6 +22,7 @@ import { useQuery } from '@apollo/react-hooks'
 import SoundPlayer from 'react-native-sound-player'
 import SplashScreen from 'react-native-splash-screen'
 import SourcePicker from './sourcePicker'
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {
     audioUrl
@@ -79,12 +80,13 @@ const Main = (props) => {
     const [play, setPlay] = useState(false)
     const [pageReady, setPageReady] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
-    const [filter, setFilter] = useState("all")
+    const [filter, setFilter] = useState([])
 
     let timer = null
 
     useEffect(() => {
         setAudio()
+        checkFirst()
     }, [data])
 
     useEffect(() => {
@@ -99,8 +101,17 @@ const Main = (props) => {
         onIndexChange()
     }, [selectedIndex])
 
+    const checkFirst = async () => {
+        // await AsyncStorage.clear()
+        let first = await AsyncStorage.getItem("first")
+        if (!first) {
+            AsyncStorage.setItem("first", "first")
+            props.navigation.navigate('Source', { filter, setFilter: setFilterFunc })
+        }
+    }
+
     const onIndexChange = async () => {
-        if (data && data.news) {
+        if (data && data.news && data.news.length > 0) {
             SoundPlayer.playUrl(audioUrl + filterFunc()[selectedIndex].audio)
             if (!play) {
                 SoundPlayer.pause()
@@ -116,7 +127,7 @@ const Main = (props) => {
     carousel = useRef(null)
 
     const setAudio = () => {
-        if (data && data.news) {
+        if (data && data.news && data.news.length > 0) {
             SoundPlayer.playUrl(audioUrl + filterFunc()[selectedIndex].audio)
             SoundPlayer.pause()
         }
@@ -180,18 +191,20 @@ const Main = (props) => {
     }
 
     const filterFunc = () => {
-        return data.news.filter((data) => {
-            if (filter == "all") {
-                return data
+        if (data && data.news) {
+            if (filter.length > 0) {
+                return data.news.filter((item) => {
+                    return filter.includes(item.source)
+                })
             } else {
-                return data.source == filter
+                return data.news
             }
-        })
+        }
     }
 
     const setFilterFunc = (filter) => {
         setFilter(filter)
-        setTimeout(() => { carousel.snapToNext(true) }, 300)
+        setTimeout(() => { carousel.snapToNext(true) }, 200)
     }
 
     if (!pageReady) {
@@ -224,13 +237,13 @@ const Main = (props) => {
                 <Text style={styles.title}>Tap News</Text>
                 <TouchableOpacity
                     activeOpacity={0.6}
-                    onPress={() => { setModalVisible(true) }}
+                    onPress={() => { props.navigation.navigate('Source', { filter, setFilter: setFilterFunc }) }}
                     style={{ alignItems: "center", justifyContent: "center" }}
                 >
                     <Ionicons
                         name="md-settings"
                         size={30}
-                        color={filter == "all" ? "white" : "#ff9999"}
+                        color={filter.length > 0 ? "#ff9999" : "white"}
                         style={{ marginLeft: 10, marginTop: 6 }}
                     />
                 </TouchableOpacity>
@@ -291,7 +304,7 @@ const Main = (props) => {
                     />
                 </TouchableOpacity>
             </View>
-            <SourcePicker visible={modalVisible} setModalVisible={setModalVisible} filter={filter} setFilter={setFilterFunc} />
+            {/* <SourcePicker visible={modalVisible} setModalVisible={setModalVisible} filter={filter} setFilter={setFilterFunc} /> */}
         </ScrollView>
     )
 }

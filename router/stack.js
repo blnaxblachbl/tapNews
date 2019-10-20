@@ -3,6 +3,7 @@ import { Animated, Easing } from 'react-native'
 
 import MainScreen from '../screens/main'
 import ModalScreen from '../screens/modal'
+import SourceScreen from '../screens/sourcePicker'
 
 export default createStackNavigator(
     {
@@ -19,6 +20,18 @@ export default createStackNavigator(
                     backgroundColor: "#444f5a",
                 },
                 headerTitle: navigation.state.params.item.title,
+                headerTitleStyle: { color: 'white' },
+                headerTintColor: 'white',
+                headerBackTitle: null
+            }),
+        },
+        Source: {
+            screen: SourceScreen,
+            navigationOptions: ({ navigation }) => ({
+                headerStyle: {
+                    backgroundColor: "#444f5a",
+                },
+                headerTitle: "Источники",
                 headerTitleStyle: { color: 'white' },
                 headerTintColor: 'white',
                 headerBackTitle: null
