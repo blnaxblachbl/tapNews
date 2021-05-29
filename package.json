@@ -40,7 +40,7 @@
     "react-navigation-stack": "^1.9.4",
     "subscriptions-transport-ws": "^0.9.16",
     "url": "^0.11.0",
-    "ws": "^7.1.2"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
